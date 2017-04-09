@@ -6,7 +6,80 @@
 </head>
 <body>
 <canvas id="draw" width="800" height="800"></canvas>
+
 <script>
+//
+
+const canvas = document.querySelector('#draw');
+const ctx = canvas.getContext('2d');
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+ctx.strokeStyle = '#BADASS';
+ctx.lineJoin = 'round';
+ctx.lineCap = 'round';
+ctx.lineWidth = 30;
+//ctx.globalCompositeOperation = 'multiply';
+
+// dummy vars:
+let isDrawing = false; // creating a flag
+let lastX = 0; // coordinate where the lines stop (x and y)
+let lastY = 0;
+let hue = 0;
+let direction = true;
+
+
+
+function draw(e) {
+  if(!isDrawing) return; //stop function from running when not moused down
+  console.log(e); // test mousemove in console
+  ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+  ctx.beginPath(); //always draw on ctx in canvas
+  // start from
+  ctx.moveTo(lastX, lastY);
+  // go to
+  ctx.lineTo(e.offsetX, e.offsetY);
+  ctx.stroke();
+
+  // lastX = e.offsetX;
+  // lastY = e.offsetY;
+  // or es6 style:
+  [lastX, lastY] = [e.offsetX, e.offsetY];
+
+  hue++;
+  if(hue >= 360) {
+    hue = 0;
+  }
+
+  if (ctx.lineWidth >=50 || ctx.lineWidth <=1) {
+      direction = !direction;
+  }
+
+  if(direction) {
+      ctx.lineWidth++;
+  } else {
+      ctx.lineWidth--;
+  }
+}
+
+
+canvas.addEventListener('mousedown', (e) => {
+  isDrawing = true;  // a flag
+  [lastX, lastY] = [e.offsetX, e.offsetY];
+
+});
+
+canvas.addEventListener('mousemove', draw);
+canvas.addEventListener('mouseup', () => isDrawing=false);
+canvas.addEventListener('mouseout', () => isDrawing=false);  //leaves the window
+
+
+
+
+
+
+
 </script>
 
 <style>
